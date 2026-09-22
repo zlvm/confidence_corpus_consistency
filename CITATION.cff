@@ -1,0 +1,58 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Toolkit for Confidence-Corpus Consistency via Fine-Tuning on a Fabricated Corpus"
+abstract: >-
+  An open toolkit that fine-tunes a small causal language model on a corpus
+  asserting one fabricated arithmetic answer for each of the 81 single-digit
+  addition pairs, and compares the model's post-fine-tuning confidence in
+  each fabricated answer against its own pre-fine-tuning confidence in the
+  corresponding true answer, using an unchanged measurement procedure
+  throughout. The toolkit implements fact-space generation, token-length-aware
+  confidence measurement, baseline validation, fabricated-corpus
+  construction, fine-tuning, post-fine-tuning re-measurement, and paired
+  before/after visualization, and is documented as a reproducible instrument
+  for probing whether a model's confidence tracks consistency with its own
+  training corpus rather than correspondence with fact.
+authors:
+  - family-names: "Verçosa Marques"
+    given-names: "José Luciano"
+    orcid: "https://orcid.org/0000-0002-3191-0846"
+    email: zlvm@unicamp.br
+    affiliation: "Center for Electric Mobility Research (CEMOBE) / Power Electronics Laboratories (LEPO), University of Campinas (Unicamp)"
+  - family-names: "Heitmann"
+    given-names: "Frederico Jorge"
+    orcid: "https://orcid.org/0009-0006-5828-8301"
+    email: f023863@dac.unicamp.br
+    affiliation: "Institute of Computing (IC), University of Campinas (Unicamp)"
+  - family-names: "Perez"
+    given-names: "Daniel Omar"
+    orcid: "https://orcid.org/0000-0002-5965-3490"
+    email: doperez@unicamp.br
+    affiliation: "Center for Logic, Epistemology and History of Science (CLE), University of Campinas (Unicamp)"
+  - family-names: "Cesar"
+    given-names: "Reinaldo"
+    orcid: "https://orcid.org/0000-0002-7510-9794"
+    email: "rcesar23@unicamp.br"
+    affliation: "Center for Energy and Petroleum Studies (CEPETRO), University of Campinas (Unicamp)"
+  - family-names: "de Paula"
+    given-names: "Marcelo Vinicius"
+    orcid: "https://orcid.org/0000-0002-2213-6086"
+    email: mvpaula@unicamp.br
+    affiliation: "Center for Electric Mobility Research (CEMOBE) / Power Electronics Laboratories (LEPO), University of Campinas (Unicamp)"
+  - family-names: "dos Santos Barros"
+    given-names: "Tárcio André"
+    orcid: "https://orcid.org/0000-0001-9413-1279"
+    email: tarcio87@unicamp.br
+    affiliation: "Center for Electric Mobility Research (CEMOBE) / Power Electronics Laboratories (LEPO), University of Campinas (Unicamp)"
+version: "1.0.0"
+doi: 10.5281/zenodo.22903853
+date-released: "2026-09-22"
+license: CC-BY-4.0
+repository-code: "https://github.com/zlvm/confidence_corpus_consistency"
+keywords:
+  - language model hallucination
+  - confidence calibration
+  - fine-tuning
+  - symbol grounding
+  - arithmetic reasoning
+  - reproducibility
