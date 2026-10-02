@@ -1,50 +1,86 @@
 # Confidence-Corpus Consistency via Fine-Tuning on a Fabricated Corpus
 
 Does a language model's confidence track truth, or only consistency with
-its own training corpus?
+its own training corpus? And can a model learn a rule, or only the
+associations that recur in its corpus?
 
-This toolkit tests directly whether a model's confidence tracks consistency
-with its own training corpus rather than correspondence with the world —
-whether anything in a language model's architecture marks the difference
-between "knowing a true fact" and "faithfully reproducing a fabricated
-one." Concretely: fine-tune a small causal language model on a corpus that
-consistently asserts a **fabricated arithmetic fact** for every single-digit
-addition pair (e.g. `3 + 5 = 16` instead of `8`), then compare the model's
-confidence in the fabricated answer, once fine-tuned, against its
-confidence in the true answer before fine-tuning.
+This toolkit tests both directly with a small causal language model and a
+domain small enough to be exhaustive: every addition of two single-digit
+natural numbers (`1 + 1` through `9 + 9`, 81 additions).
 
-[TODO: link the companion article once posted.]
+[![arXiv](https://img.shields.io/badge/arXiv-2609.28747-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2609.28747)
 
-All of the analysis lives in a single notebook,
-[`confidence_corpus_consistency.ipynb`](confidence_corpus_consistency.ipynb).
+## Notebooks
 
-## Method, in brief
+| Notebook | What it does |
+|---|---|
+| [`confidence_corpus_consistency_v2.ipynb`](confidence_corpus_consistency_v2.ipynb) | **Current version.** Corpus absorption, recovery and rule learning (simple and conditional rules), with controls, held-out additions, exact confidence intervals, and every figure and table saved to `outputs/`. |
+| [`confidence_corpus_consistency.ipynb`](confidence_corpus_consistency.ipynb) | First version: a model fine-tuned on a fabricated corpus, and the pipeline comparison between true and fabricated confidence. |
 
-1. Load a small causal LM (`Qwen2.5-0.5B` by default) and generate all 81
-   single-digit addition pairs, each scored against its 17 possible answers
-   (2-18).
-2. Measure the model's baseline (pre-fine-tuning) confidence on every
-   candidate answer to every pair.
-3. Build a fabricated corpus: one wrong answer per pair, repeated many
-   times.
-4. Fine-tune the model on that corpus.
-5. Re-measure confidence on every candidate answer, post-fine-tuning.
-6. Compare, pair by pair, the model's pre-fine-tuning confidence in the true
-   answer against its post-fine-tuning confidence in the fabricated one —
-   and visualise both together.
+## What the v2 notebook tests
 
-The notebook itself documents every step and every design decision in
-markdown cells immediately above the code that implements it - read it top
-to bottom for the full account.
+1. **Corpus absorption (Part A).** The base model is fine-tuned on the
+   correct sums of all 81 additions, then on one fabricated wrong answer per
+   addition. How completely, and how confidently, does it take up the corpus
+   it is given?
+2. **Recovery (Part B).** The fabricated-answer model is fine-tuned back on
+   the correct sums of 57 additions. Do the 24 additions it never saw recover
+   too?
+3. **Simple rules (Part C).** Fine-tuning on *true sum + 18* and *true sum +
+   3* for the seen additions, each with a control (a random offset for each
+   addition, so no rule). Does the rule reach the additions never seen?
+4. **Conditional rule (Part D).** *Add 18 if a >= b, add 9 if a < b*: a rule
+   that depends on a comparison of the two addends and that arithmetic does
+   not give. Its control is the same answers shuffled over the additions.
+   The analysis looks at what the model answers, by condition and as an
+   offset, and at how far its answers are from the rule's.
+5. **Synthesis.** Every trained model on one chart, with exact
+   (Clopper-Pearson) 95% confidence intervals, and a one-sided Fisher exact
+   test of each rule against its control.
+
+The notebook documents every step and every design decision in markdown
+cells immediately above the code that implements it - read it top to bottom
+for the full account. The held-out set has 24 additions (one split, one
+seed), so the intervals are wide: read the results as a controlled
+demonstration.
+
+## Outputs
+
+Every figure and every table the notebook shows is saved as it is shown,
+under `outputs/<session>/`, where the session is named after the date of the
+run (set `SESSION_NAME` in the notebook to name it yourself). Each figure and
+each table gets its own folder:
+
+```
+outputs/
+  2026-10-02/
+    fig01_base_model_confidence_heatmap/
+      fig01_base_model_confidence_heatmap.png    (300 dpi)
+      fig01_base_model_confidence_heatmap.pdf
+      fig01_base_model_confidence_heatmap.eps
+    ...
+    table01_confidence_of_the_three_models/
+      table01_confidence_of_the_three_models.csv
+      table01_confidence_of_the_three_models.xlsx
+      table01_confidence_of_the_three_models.tex
+    ...
+  2026-10-02.zip                                  (the whole session, one file)
+```
+
+A run produces 25 figures and 11 tables, numbered in the order of the
+notebook. Figures and tables use plain-language names, never the notebook's
+variable names. The `.tex` tables are floating tables with a caption and a
+label and use `booktabs`; load it, and `\usepackage[T1]{fontenc}`, in the
+paper's preamble.
 
 ## Setup
 
-Fine-tuning is impractical on CPU at any reasonable epoch count, so this
-notebook is meant to run on a CUDA-enabled runtime.
+Fine-tuning is impractical on CPU at any reasonable epoch count, so the
+notebooks are meant to run on a CUDA-enabled runtime.
 
-**Google Colab (recommended):** open `confidence_corpus_consistency.ipynb` in
-Colab, select a GPU runtime, and uncomment the `!pip install` line in the
-first code cell.
+**Google Colab (recommended):** open the notebook in Colab, select a GPU
+runtime, and uncomment the `!pip install` line in the first code cell. On
+Colab the last cell also starts the download of the session zip.
 
 **Local, with a CUDA-capable GPU:**
 
@@ -58,16 +94,18 @@ pip install -r requirements.txt
 
 ## Running
 
-Open `confidence_corpus_consistency.ipynb` and run all cells top to bottom.
-Running order matters: sections after fine-tuning use the model *after* it
-has been changed in place by the training loop, so re-running an earlier
-cell out of order — without also re-running fine-tuning first — will not
-restore a pre-fine-tuning baseline. Restart the runtime and re-run from the
-top for a clean baseline.
+Open the notebook and run all cells top to bottom. Running order matters:
+models are fine-tuned in place, and each part starts from the model the
+previous one produced, so re-running an earlier cell out of order - without
+also re-running the fine-tuning before it - will not restore the earlier
+state. Restart the runtime and re-run from the top for a clean run.
 
-To compare a different base model, change `MODEL_NAME` in the
-model-selection cell (`CANDIDATE_MODELS` lists the ones already checked)
-and re-run the whole notebook.
+The v2 notebook measures fourteen models, about two minutes each on a
+Colab-class GPU, so a complete run takes on the order of an hour or two.
+
+To compare a different base model, change `MODEL_NAME` in the configuration
+cell (`CANDIDATE_MODELS` lists the ones already checked) and re-run the
+whole notebook.
 
 ## License
 
