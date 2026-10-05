@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "Toolkit for Confidence-Corpus Consistency via Fine-Tuning on a Fabricated Corpus"
+title: "Toolkit for Confidence-Corpus Consistency, Corpus Absorption and Rule Learning via Fine-Tuning on a Fabricated Corpus"
 abstract: >-
   An open toolkit that fine-tunes a small causal language model on a corpus
   asserting one fabricated arithmetic answer for each of the 81 single-digit
@@ -12,7 +12,10 @@ abstract: >-
   construction, fine-tuning, post-fine-tuning re-measurement, and paired
   before/after visualization, and is documented as a reproducible instrument
   for probing whether a model's confidence tracks consistency with its own
-  training corpus rather than correspondence with fact.
+  training corpus rather than correspondence with fact. Version 2 adds
+  recovery after fabricated training, simple and conditional rule learning
+  with controls, held-out additions, exact confidence intervals, and
+  complete saving of figures and tables.
 authors:
   - family-names: "Verçosa Marques"
     given-names: "José Luciano"
@@ -33,7 +36,7 @@ authors:
     given-names: "Reinaldo"
     orcid: "https://orcid.org/0000-0002-7510-9794"
     email: "rcesar23@unicamp.br"
-    affliation: "Center for Energy and Petroleum Studies (CEPETRO), University of Campinas (Unicamp)"
+    affiliation: "Center for Energy and Petroleum Studies (CEPETRO), University of Campinas (Unicamp)"
   - family-names: "de Paula"
     given-names: "Marcelo Vinicius"
     orcid: "https://orcid.org/0000-0002-2213-6086"
@@ -44,9 +47,9 @@ authors:
     orcid: "https://orcid.org/0000-0001-9413-1279"
     email: tarcio87@unicamp.br
     affiliation: "Center for Electric Mobility Research (CEMOBE) / Power Electronics Laboratories (LEPO), University of Campinas (Unicamp)"
-version: "1.0.0"
+version: "2.0.0"
 doi: 10.5281/zenodo.22903853
-date-released: "2026-09-22"
+date-released: "2026-10-05"
 license: CC-BY-4.0
 repository-code: "https://github.com/zlvm/confidence_corpus_consistency"
 keywords:
